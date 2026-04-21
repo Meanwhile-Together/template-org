@@ -1,0 +1,33 @@
+{
+  "org": {
+    "name": "Organization host",
+    "slug": "org-host",
+    "owner": "your-github-org",
+    "version": "1.0.0"
+  },
+  "ai": {
+    "inferenceMode": "local",
+    "serverMode": "local",
+    "localEnabled": false,
+    "enableLogging": false,
+    "platformOverrides": {
+      "web": {},
+      "mobile": {},
+      "desktop": {},
+      "node": {}
+    }
+  },
+  "chatbots": [],
+  "development": {
+    "port": 3001,
+    "url": "http://localhost:3001"
+  },
+  "staging": {
+    "port": 3001,
+    "url": "https://staging-api.example.com"
+  },
+  "production": {
+    "port": 3001,
+    "url": "https://api.example.com"
+  }
+}

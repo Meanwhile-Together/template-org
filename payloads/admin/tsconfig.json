@@ -1,0 +1,22 @@
+{
+  "extends": "../../../project-bridge/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "declaration": true,
+    "declarationMap": true,
+    "jsx": "react-jsx",
+    "skipLibCheck": true,
+    "paths": {
+      "@meanwhile-together/shared": ["../../../project-bridge/shared/src"],
+      "@meanwhile-together/shared/*": ["../../../project-bridge/shared/src/*"],
+      "@meanwhile-together/ui": ["../../../project-bridge/ui/src"],
+      "@meanwhile-together/ui/*": ["../../../project-bridge/ui/src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -1,0 +1,8 @@
+# Used when `railway up --no-gitignore` is run (mtx deploy): still exclude secrets and junk.
+# node_modules and .git are always excluded by Railway CLI.
+.env
+.env.*
+!.env.example
+
+# Legacy rsync of project-bridge node_modules; often has symlinks to ../project-bridge — breaks Railway indexing.
+targets/server/runtime/

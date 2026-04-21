@@ -1,0 +1,12 @@
+# Copy to terraform.tfvars (gitignored) or pass -var / TF_VAR_* when running terraform apply.
+# mtx deploy runs apply from MTX/terraform/apply.sh with discovered IDs; optional vars can be set in the shell.
+
+environment = "staging"
+
+# Optional: create a Railway service named "db" (empty shell). Does NOT provision PostgreSQL.
+# For Prisma, add Railway's PostgreSQL database in the project UI and reference DATABASE_URL on each app service.
+# See docs/RAILWAY_DATABASE.md
+railway_create_db_service = false
+
+# If you already have a db service ID from Railway:
+# railway_db_service_id = ""

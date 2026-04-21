@@ -1,0 +1,25 @@
+{
+  "server": {
+    "port": 3001,
+    "projectRoot": "..",
+    "stateDir": ".state",
+    "backendAddons": ["ai", "browser", "auth"],
+    "env": {},
+    "host": {
+      "pathPrefix": "/",
+      "staticDir": "dist",
+      "apiPrefix": "/api",
+      "runAsMaster": false
+    }
+  },
+  "apps": [
+    {
+      "id": "payload-admin",
+      "pathPrefix": "/admin",
+      "staticDir": "dist",
+      "apiPrefix": "/api",
+      "runAsMaster": false,
+      "source": { "path": "./payloads/admin" }
+    }
+  ]
+}

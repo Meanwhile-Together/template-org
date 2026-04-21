@@ -1,0 +1,29 @@
+{
+  "name": "@meanwhile-together/org-railway-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Generated for Railway npm install; workspace packages are file: tarballs from npm pack.",
+  "dependencies": {
+    "@meanwhile-together/demo": "file:targets/server/npm-packs/meanwhile-together-demo-1.0.0.tgz",
+    "@meanwhile-together/engine": "file:targets/server/npm-packs/meanwhile-together-engine-1.0.0.tgz",
+    "@meanwhile-together/shared": "file:targets/server/npm-packs/meanwhile-together-shared-1.0.0.tgz",
+    "@meanwhile-together/ui": "file:targets/server/npm-packs/meanwhile-together-ui-1.0.0.tgz",
+    "@prisma/adapter-better-sqlite3": "^7.0.0",
+    "@prisma/adapter-pg": "^7.0.0",
+    "@prisma/client": "^7.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^5.1.0",
+    "pg": "^8.13.1",
+    "router": "^2.2.0",
+    "http-proxy-middleware": "^2.0.6",
+    "playwright": "^1.54.2",
+    "ws": "^8.18.3"
+  },
+  "overrides": {
+    "@meanwhile-together/demo": "file:targets/server/npm-packs/meanwhile-together-demo-1.0.0.tgz",
+    "@meanwhile-together/engine": "file:targets/server/npm-packs/meanwhile-together-engine-1.0.0.tgz",
+    "@meanwhile-together/shared": "file:targets/server/npm-packs/meanwhile-together-shared-1.0.0.tgz",
+    "@meanwhile-together/ui": "file:targets/server/npm-packs/meanwhile-together-ui-1.0.0.tgz"
+  }
+}

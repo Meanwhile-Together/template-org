@@ -1,0 +1,10 @@
+{
+  "platform": ["railway"],
+  "projectId": "",
+  "staging": {
+    "healthEndpoints": []
+  },
+  "production": {
+    "healthEndpoints": []
+  }
+}

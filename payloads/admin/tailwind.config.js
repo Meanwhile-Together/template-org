@@ -1,0 +1,53 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
+    '../../../project-bridge/engine/**/*.{js,ts,jsx,tsx}',
+    '../../../project-bridge/ui/src/**/*.{js,ts,jsx,tsx}',
+    '../../../project-bridge/ui/src/styles/**/*.css',
+  ],
+  darkMode: ['class', '[data-theme="dark"]'],
+  theme: {
+    extend: {
+      colors: {
+        'backend-primary': '#2c3e50',
+        'backend-secondary': '#3498db',
+        'backend-accent': '#e74c3c',
+        'bg-primary': 'var(--bg-primary)',
+        'bg-secondary': 'var(--bg-secondary)',
+        'bg-tertiary': 'var(--bg-tertiary)',
+        'bg-hover': 'var(--bg-hover)',
+        'bg-active': 'var(--bg-active)',
+        'text-primary': 'var(--text-primary)',
+        'text-secondary': 'var(--text-secondary)',
+        'text-tertiary': 'var(--text-tertiary)',
+        'text-inverse': 'var(--text-inverse)',
+        'border-primary': 'var(--border-primary)',
+        'border-secondary': 'var(--border-secondary)',
+        'border-focus': 'var(--border-focus)',
+        'accent-primary': 'var(--accent-primary)',
+        'accent-secondary': 'var(--accent-secondary)',
+        'accent-tertiary': 'var(--accent-tertiary)',
+        'accent-success': 'var(--accent-success)',
+        'accent-warning': 'var(--accent-warning)',
+        'accent-error': 'var(--accent-error)',
+        'overlay-light': 'var(--overlay-light)',
+        'overlay-dark': 'var(--overlay-dark)',
+        'overlay-backdrop': 'var(--overlay-backdrop)',
+      },
+      boxShadow: {
+        sm: 'var(--shadow-sm)',
+        md: 'var(--shadow-md)',
+        lg: 'var(--shadow-lg)',
+        xl: 'var(--shadow-xl)',
+      },
+      backgroundImage: {
+        'gradient-primary': 'var(--gradient-primary)',
+        'gradient-secondary': 'var(--gradient-secondary)',
+        'gradient-bg': 'var(--gradient-bg)',
+      },
+    },
+  },
+  plugins: [],
+};

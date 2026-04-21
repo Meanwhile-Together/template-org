@@ -1,0 +1,27 @@
+{
+  "providers": {
+    "openai": {
+      "apiKey": "",
+      "baseUrl": "https://api.openai.com",
+      "organization": "your-org-id"
+    },
+    "anthropic": {
+      "apiKey": "",
+      "baseUrl": "https://api.anthropic.com"
+    },
+    "together": {
+      "apiKey": "",
+      "baseUrl": "https://api.together.xyz"
+    },
+    "groq": {
+      "apiKey": "",
+      "baseUrl": "https://api.groq.com"
+    }
+  },
+  "deployment": {
+    "vercelApiKey": "",
+    "vercelOrgId": "",
+    "railwayApiKey": "",
+    "railwayProjectToken": ""
+  }
+}

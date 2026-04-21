@@ -1,0 +1,16 @@
+# Example production configuration
+# Copy this to terraform.tfvars and fill in your values
+#
+# App name is loaded automatically from config/org.json (legacy fallback: config/app.json)
+# Platforms are loaded automatically from config/deploy.json
+
+environment = "production"
+
+# Terraform Cloud configuration (optional)
+terraform_cloud_organization = "your-org"
+terraform_cloud_workspace = "production"
+
+# Railway
+railway_token = "" # Set via RAILWAY_TOKEN environment variable or Terraform Cloud
+railway_workspace_id = "" # Set via RAILWAY_WORKSPACE_ID environment variable
+railway_service_id = "" # For existing app services (optional)
