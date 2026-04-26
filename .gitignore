@@ -25,6 +25,9 @@ targets/server/runtime/
 # Note: targets/server/dist/ and targets/server/npm-packs/ are NOT listed here so
 # `railway up` and Git include the prepared bundle (run npm run prepare:railway before deploy).
 
+# Vendored path-payload trees under ./payloads/ (MTX vendor-payloads-from-config). Regenerated on prepare; do not commit.
+payloads/*
+
 # Terraform (mtx deploy — local state; do not commit)
 .terraform/
 .terraform.lock.hcl

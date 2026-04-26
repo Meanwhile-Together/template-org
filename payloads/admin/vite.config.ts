@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
+import { mtFrameworkPlugins } from '@meanwhile-together/ui/vite';
 
 const projectBridge = resolve(__dirname, '../../../project-bridge');
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), ...mtFrameworkPlugins()],
   build: {
     outDir: 'dist',
     emptyOutDir: true,

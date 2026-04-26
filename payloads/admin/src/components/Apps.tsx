@@ -1,186 +1,122 @@
 /**
- * Applications — list from API (GET /api/internal/admin/apps). Open navigates to app drill-down.
+ * Apps — the **tenant** view of payloads installed in this org's host. Source of truth is the
+ * bootstrap `/api/config` response (`ClientSafeConfig.payloads`), i.e. whatever is listed
+ * under `config/server.json` `apps[]` for the running unified server.
+ *
+ * Before the 2026-04-21 Apps/Clients split, the `apps` view in the admin panel rendered the
+ * signed-in master user's Railway project inventory. That leaked platform-level chrome into
+ * every org and silently blanked out for non-master tenants. The Railway-backed UI moved to
+ * the master-only `Clients` view; this file now owns the tenant-facing surface. See
+ * rule-of-law §1 "Apps/Clients split (bootstrap vs Railway)".
+ *
+ * No CRUD: bootstrap payloads are defined at the server level (vendored via
+ * `MTX/lib/vendor-payloads-from-config.sh` from `config/server.json`). Creating / disabling
+ * is a platform operation, not a tenant action — we render "Add a payload via `mtx payload
+ * install`" guidance instead of faking a form.
  */
-import { useState } from 'react';
-import { useAdminApps } from '../contexts/AdminAppsContext';
-import type { AdminAppFromApi } from '../contexts/AdminAppsContext';
-import { DEVICE_OPTIONS } from '../data/mockApps';
-import type { DeviceType } from '../data/mockApps';
-import { getMockTier } from '../data/mockTier';
+import { useAppConfig } from '@meanwhile-together/shared';
+import type { ClientPayloadIdentity } from '@meanwhile-together/shared';
 
-function navigateToView(viewId: string) {
-  if (typeof window === 'undefined') return;
-  const path = viewId === 'dashboard' ? '/dashboard' : viewId === 'apps' ? '/apps' : `/${viewId}`;
-  window.history.pushState({ viewId }, '', path);
-  window.dispatchEvent(new PopStateEvent('popstate'));
+/** Human-readable mount description: `"/" + slug` for root; mountBase for non-root. */
+function describeMount(payload: ClientPayloadIdentity): string {
+  if (!payload.mountBase) return '/ (default host)';
+  return payload.mountBase;
 }
 
-/** Card for one app in the Apps list; opens app drill-down on click. */
-function AppCard({ app }: { app: AdminAppFromApi }) {
+/** Absolute href the user can click to open this payload. Never '' — falls back to '/'. */
+function hrefFor(payload: ClientPayloadIdentity): string {
+  const base = payload.mountBase?.trim() ?? '';
+  if (!base) return '/';
+  // mountBase is already a leading-slash, no-trailing-slash path (see ClientPayloadIdentity
+  // contract) — append a trailing slash so the link resolves to the payload's index, not
+  // to a sibling like `/vibe-check.html`.
+  return `${base}/`;
+}
+
+function PayloadCard({ payload }: { payload: ClientPayloadIdentity }) {
+  const mount = describeMount(payload);
   return (
     <li className="overview-app-card">
       <div className="overview-app-card-head">
-        <strong className="overview-app-card-name">{app.name}</strong>
+        <strong className="overview-app-card-name">{payload.name}</strong>
       </div>
-      <div className="overview-app-card-meta">
-        <span>Slug: {app.slug}</span>
+      <div className="overview-app-card-meta" style={{ display: 'grid', gap: '0.1rem' }}>
+        <span>Slug: <code>{payload.slug}</code></span>
+        <span>Mount: <code>{mount}</code></span>
+        <span>API: <code>{payload.apiPrefix}</code></span>
+        {payload.description && (
+          <span style={{ color: 'var(--text-secondary, #555)' }}>{payload.description}</span>
+        )}
       </div>
-      <button type="button" className="overview-app-card-btn" onClick={() => navigateToView(app.id)}>
-        Open
-      </button>
+      <div className="overview-app-card-actions">
+        <button
+          type="button"
+          className="overview-app-card-btn overview-app-card-btn--secondary"
+        >
+          Config
+        </button>
+        <a
+          className="overview-app-card-btn"
+          href={hrefFor(payload)}
+          // Full document navigation — each payload is its own SPA at `mountBase`. Client-side
+          // navigation would stay inside the admin mount and 404; this is a hard hop to the URL.
+        >
+          Open
+        </a>
+      </div>
     </li>
   );
 }
 
-const MOCK_ENTRY_APP_LIMIT = 5;
-const MOCK_ENTRY_APP_COUNT = 3;
-
 /**
- * Apps list from API, "Create app" modal (device selection), and tier-gated Advanced settings section.
- * @returns Apps page React element
+ * Apps page — renders the tenant's bootstrap payload roster.
+ * @returns React element
  */
 export default function Apps() {
-  const { apps, loading, error } = useAdminApps();
-  const tier = getMockTier();
-  const isEntry = tier === 'entry';
-  const [advancedOpen, setAdvancedOpen] = useState(false);
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [createAppDevices, setCreateAppDevices] = useState<DeviceType[]>([]);
-
-  const toggleCreateDevice = (id: DeviceType) => {
-    setCreateAppDevices((prev) =>
-      prev.includes(id) ? prev.filter((d) => d !== id) : [...prev, id]
-    );
-  };
+  const { payloads, loading } = useAppConfig();
 
   return (
     <div className="overview-page">
       <header className="overview-hero">
         <h1 className="overview-hero-title">Apps</h1>
         <p className="overview-hero-summary">
-          Create and manage your apps. Open any app to configure settings, usage, and deployments.
+          Payloads installed in this org's host. Each one is its own app mounted at a URL
+          prefix; Open goes to that URL. Config is reserved for in-admin settings (not wired yet).
         </p>
       </header>
 
       <section className="overview-section overview-section--apps" aria-labelledby="apps-list-heading">
         <div className="overview-section-header">
           <h2 id="apps-list-heading" className="overview-section-title">
-            Your apps
+            Installed payloads
           </h2>
-          <button
-            type="button"
-            className="usage-portal-btn"
-            onClick={() => {
-              setShowCreateModal(true);
-              setCreateAppDevices([]);
-            }}
-          >
-            + Create app
-          </button>
         </div>
-        {isEntry && (
-          <p className="overview-section-desc">
-            You have {MOCK_ENTRY_APP_COUNT} of {MOCK_ENTRY_APP_LIMIT} apps. (Mock)
-          </p>
-        )}
         <p className="overview-section-desc">
-          Open an app to configure it or view per-app usage.
+          This list is delivered with the SPA bootstrap (`/api/config` →
+          `ClientSafeConfig.payloads`) — it mirrors <code>config/server.json</code> on the
+          running unified server. Adding or removing a payload is a platform operation; run
+          <code> mtx payload install &lt;name&gt;</code> and redeploy.
         </p>
-        {loading && <p className="overview-section-desc" style={{ padding: '1rem 0' }}>Loading apps…</p>}
-        {error && <p className="overview-section-desc" style={{ padding: '1rem 0', color: 'var(--color-error, #c00)' }}>{error}</p>}
-        {!loading && !error && (
+        {loading && (
+          <p className="overview-section-desc" style={{ padding: '1rem 0' }}>Loading…</p>
+        )}
+        {!loading && (
           <div className="overview-verticals">
             <ul className="overview-app-grid">
-              {apps.length === 0 ? (
-                <p className="overview-section-desc">No apps yet. Create one to get started.</p>
+              {payloads.length === 0 ? (
+                <p className="overview-section-desc">
+                  No payloads are registered on this host. That's valid for a bare backend,
+                  but the admin panel itself should always appear here — if you see this in a
+                  hybrid-admin deploy something is wrong upstream. Check the server's
+                  bootstrap log for <code>[PayloadRegistry]</code> entries.
+                </p>
               ) : (
-                apps.map((app) => <AppCard key={app.id} app={app} />)
+                payloads.map((p) => <PayloadCard key={p.id} payload={p} />)
               )}
             </ul>
           </div>
         )}
       </section>
-
-      {!isEntry && (
-        <section className="overview-section ai-collapsible-section" aria-labelledby="apps-advanced-heading">
-          <button
-            type="button"
-            className="ai-collapsible-heading"
-            onClick={() => setAdvancedOpen((o) => !o)}
-            aria-expanded={advancedOpen}
-            id="apps-advanced-heading"
-          >
-            <span className="ai-collapsible-chevron" aria-hidden>{advancedOpen ? '▼' : '▶'}</span>
-            Advanced settings
-          </button>
-          {advancedOpen && (
-            <div className="ai-collapsible-body">
-              <p className="overview-section-desc">
-                Per-app or project-level options: enable/disable, API keys, environment, limits, per-app usage.
-              </p>
-              <ul className="ai-agent-bullets">
-                <li>Enable / disable apps</li>
-                <li>API keys, secrets</li>
-                <li>Environment (prod / dev / staging)</li>
-                <li>Limits and quotas</li>
-                <li>Per-app usage</li>
-              </ul>
-            </div>
-          )}
-        </section>
-      )}
-
-      {showCreateModal && (
-        <div
-          className="admin-modal-backdrop"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="create-app-title"
-          onClick={(e) => e.target === e.currentTarget && setShowCreateModal(false)}
-        >
-          <div className="admin-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="admin-modal-header">
-              <h2 id="create-app-title">Create app</h2>
-            </div>
-            <div className="admin-modal-body">
-              <p>
-                Which devices do you need this app on? Select at least one. You can change this later in the app settings.
-              </p>
-              <div className="apps-create-devices">
-                {DEVICE_OPTIONS.map((opt) => (
-                  <label
-                    key={opt.id}
-                    className={`apps-create-device-option ${createAppDevices.includes(opt.id) ? 'apps-create-device-option--selected' : ''}`}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={createAppDevices.includes(opt.id)}
-                      onChange={() => toggleCreateDevice(opt.id)}
-                      className="account-prefs-checkbox"
-                    />
-                    <span>{opt.label}</span>
-                  </label>
-                ))}
-              </div>
-              <p className="overview-section-desc" style={{ marginTop: '1rem', marginBottom: 0 }}>
-                Cost may vary based on which devices you enable.
-              </p>
-            </div>
-            <div className="admin-modal-footer">
-              <button type="button" className="account-btn" onClick={() => setShowCreateModal(false)}>
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="usage-portal-btn"
-                onClick={() => setShowCreateModal(false)}
-              >
-                Create
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { AuthProvider, ConfigProvider } from '@meanwhile-together/shared';
 import App from './App';
 import '@meanwhile-together/ui/styles/globals.css';
 import './styles.css';
+import './admin-theme.css';
 
 const masterAuthUrl =
   (typeof import.meta !== 'undefined' && (import.meta as { env?: Record<string, string> }).env?.VITE_MASTER_AUTH_URL) ||

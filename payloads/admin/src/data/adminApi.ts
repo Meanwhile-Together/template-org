@@ -4,10 +4,40 @@
  * - GET /api/internal/admin/app/:slug — metadata for a single app (by slug or id).
  * - GET /api/internal/admin/app/:slug/logs — build and deploy logs from Railway.
  * - GET /api/internal/admin/crossapp-comms/:slug/schema|tables|tables/:table — app DB introspection.
+ *
+ * Base URL resolution (build-time env, same shape as `VITE_MASTER_AUTH_URL` fan-out in `main.tsx`):
+ *   1. `VITE_MASTER_ADMIN_URL` — explicit override for the admin addon base.
+ *   2. `VITE_MASTER_AUTH_URL` — if set (e.g. `https://master/auth`), swap trailing `/auth` → `/api/internal/admin`.
+ *   3. Fallback: same-origin `/api/internal/admin`.
+ *
+ * This matters because tenant admin panels (fan-out) must call *master's* admin API — tenants only
+ * carry project-scoped Railway tokens that Railway GraphQL rejects as "Not Authorized" for
+ * cross-service log / deployment queries. Master has the account token and the Railway reach.
+ * CORS: master's `MASTER_CORS_ORIGINS` must list every tenant origin (rule-of-law 2026-04-21
+ * Asmaster architecture); auth uses the master JWT the admin SPA already holds from `/auth/login`.
  */
+function resolveAdminApiBase(): string {
+  const env =
+    (typeof import.meta !== 'undefined' &&
+      (import.meta as { env?: Record<string, string | undefined> }).env) ||
+    {};
+  const explicit = (env.VITE_MASTER_ADMIN_URL || '').trim();
+  if (explicit) return explicit.replace(/\/+$/, '');
+  const auth = (env.VITE_MASTER_AUTH_URL || '').trim().replace(/\/+$/, '');
+  if (auth && /\/auth$/.test(auth)) {
+    return auth.replace(/\/auth$/, '/api/internal/admin');
+  }
+  return '/api/internal/admin';
+}
 
-/** Base path for all admin internal API routes. */
-export const ADMIN_API_BASE = '/api/internal/admin';
+/** Base path for all admin internal API routes (resolved at module load). */
+export const ADMIN_API_BASE: string = resolveAdminApiBase();
+
+/** Build an absolute admin API URL. `path` MUST start with `/`. */
+export function adminUrl(path: string): string {
+  if (!path.startsWith('/')) path = '/' + path;
+  return `${ADMIN_API_BASE}${path}`;
+}
 
 /**
  * URL for listing apps owned by the current owner (GET).

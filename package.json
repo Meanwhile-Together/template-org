@@ -26,7 +26,7 @@
   "scripts": {
     "prepare:railway": "bash scripts/prepare-railway-artifact.sh",
     "dev": "bash scripts/org-dev-server.sh",
-    "build:server": "bash scripts/org-build-server.sh",
+    "build:server": "mtx build server",
     "build:backend-server": "npm run build:server"
   }
 }

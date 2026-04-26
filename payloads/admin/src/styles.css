@@ -1,3 +1,1 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "@meanwhile-together/ui/styles/framework.css";

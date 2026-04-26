@@ -37,7 +37,19 @@ if [ "${MTX_SKIP_PAYLOAD_VENDOR:-}" != "1" ] && [ -f "$ROOT/config/server.json" 
 fi
 
 echo "==> prepare-railway-artifact: unified server build (org config -> project-bridge)"
-bash "$ROOT/scripts/org-build-server.sh"
+_ORG_BUILD_IMPL=""
+if [ -n "${MTX_ROOT:-}" ] && [ -f "$MTX_ROOT/project/org-build-server.sh" ]; then
+  _ORG_BUILD_IMPL="$MTX_ROOT/project/org-build-server.sh"
+elif [ -f "$ROOT/../MTX/project/org-build-server.sh" ]; then
+  _ORG_BUILD_IMPL="$(cd "$ROOT/../MTX" && pwd)/project/org-build-server.sh"
+elif [ -f "$ROOT/../../MTX/project/org-build-server.sh" ]; then
+  _ORG_BUILD_IMPL="$(cd "$ROOT/../../MTX" && pwd)/project/org-build-server.sh"
+fi
+if [ -n "$_ORG_BUILD_IMPL" ]; then
+  bash "$_ORG_BUILD_IMPL" "$ROOT"
+else
+  bash "$ROOT/scripts/org-build-server.sh"
+fi
 
 echo "==> prepare-railway-artifact: bundle prisma schemas + migrations for runtime migrate deploy"
 # Prisma 7 forbids `url` in `datasource db {}`; it must come from `prisma.config.ts`.

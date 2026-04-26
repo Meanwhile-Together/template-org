@@ -1,6 +1,5 @@
 /**
- * Apps view: list apps from API, create app modal, advanced settings (tier-gated).
- * Wraps the Apps component from components.
+ * Apps view: bootstrap payload roster from `/api/config` (see `components/Apps.tsx`).
  */
 import type { ViewDefinition } from '@meanwhile-together/shared';
 import AppsComponent from '../components/Apps';
