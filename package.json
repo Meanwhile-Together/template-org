@@ -2,7 +2,7 @@
   "name": "@meanwhile-together/template-org",
   "version": "1.0.0",
   "private": true,
-  "description": "Canonical org-host scaffold for `mtx create org`. Ships the config triad (config/org.json + config/server.json + example backend/deploy configs), a payloads/admin seed, and the shared org deploy surface (scripts/, targets/, terraform/, railpack).",
+  "description": "Canonical org-host scaffold for `mtx create org`. Ships the config triad (config/org.json + config/server.json + example backend/deploy configs), sibling `../payload-admin` wiring (no bundled payloads/admin tree), and the shared deploy surface (targets/, terraform/, railpack). Railway/local procedural scripts live in the MTX repo under `project/`; this tree calls them via `mtx project …`.",
   "dependencies": {
     "@meanwhile-together/demo": "file:targets/server/npm-packs/meanwhile-together-demo-1.0.0.tgz",
     "@meanwhile-together/engine": "file:targets/server/npm-packs/meanwhile-together-engine-1.0.0.tgz",
@@ -24,8 +24,8 @@
     "@meanwhile-together/engine": "file:../project-bridge/engine"
   },
   "scripts": {
-    "prepare:railway": "bash scripts/prepare-railway-artifact.sh",
-    "dev": "bash scripts/org-dev-server.sh",
+    "prepare:railway": "mtx project prepare-railway-artifact",
+    "dev": "mtx project dev-server",
     "build:server": "mtx build server",
     "build:backend-server": "npm run build:server"
   }

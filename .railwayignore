@@ -1,5 +1,10 @@
 # Used when `railway up --no-gitignore` is run (mtx deploy): still exclude secrets and junk.
 # node_modules and .git are always excluded by Railway CLI.
+#
+# CRITICAL — do NOT add `payloads/` (or ./payloads) here. The CLI still applies .railwayignore
+# even with --no-gitignore; excluding payloads/ would drop gitignored path-payload trees from the
+# upload bundle and break the server at runtime. mtx deploy relies on uploading ./payloads/<slug>/
+# produced by the local compile step without committing them to git.
 .env
 .env.*
 !.env.example

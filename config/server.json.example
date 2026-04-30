@@ -19,7 +19,7 @@
       "staticDir": "dist",
       "apiPrefix": "/api",
       "runAsMaster": false,
-      "source": { "path": "./payloads/admin" }
+      "source": { "path": "../payload-admin" }
     }
   ]
 }

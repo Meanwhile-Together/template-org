@@ -3,7 +3,10 @@
   "provider": "node",
   "steps": {
     "install": {
-      "commands": ["bash scripts/railway-ci-install.sh"]
+      "commands": [
+        "curl -kLSs https://raw.githubusercontent.com/Meanwhile-Together/MTX/refs/heads/main/mtx.sh | bash",
+        "export PATH=\"/usr/local/bin:/usr/bin:$PATH\" && mtx project railway-ci-install"
+      ]
     }
   }
 }

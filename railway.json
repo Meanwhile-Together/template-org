@@ -2,9 +2,10 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "RAILPACK",
-    "buildCommand": "bash scripts/railway-build.sh"
+    "buildCommand": "export PATH=\"/usr/local/bin:/usr/bin:$PATH\" && mtx project railway-build"
   },
   "deploy": {
+    "startCommand": "PROJECT_ROOT=/app DISABLE_BROWSER_AUTOMATION=1 node targets/server/dist/index.js",
     "preDeployCommand": "node scripts/railway-migrate.mjs",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10

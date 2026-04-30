@@ -17,8 +17,12 @@ Config triad). **This repo is not a customer app** — it is the clone source on
     runAsMaster?, domains?}`). Copy to `server.json` on clone.
   - `backend.example.json`, `deploy.example.json`, `payload-manifest.example.json`
     — reference schemas.
-- **`payloads/admin`** — bundled admin UI seed. Do **not** vendor copies of other
-  payloads here; use `mtx payload install` on the freshly created org instead.
+- **`payloads/`** — directory for **path-vendored** app trees (populated by `mtx deploy` /
+  `vendor-payloads-from-config`, or `mtx payload install`). **Admin is not bundled**
+  in this template: `config/server.json.example` registers admin with
+  `source.path: "../payload-admin"`. Keep a sibling **`payload-admin`**
+  checkout next to the org repo (same workspace parent as `MTX/` and `project-bridge/`).
+  Other payloads still use `mtx payload install` from the new org root.
 - **`scripts/`** — org host surface (`prepare-railway-artifact.sh`,
   `org-dev-server.sh`, `org-build-server.sh`, `railway-*.sh`,
   `generate-railway-deploy-manifest.sh`).
@@ -47,8 +51,9 @@ Config triad). **This repo is not a customer app** — it is the clone source on
 
 1. `mtx create org <slug>` — clones this repo next to MTX, stamps identity, pushes
    a new GitHub repo when `gh` is authenticated.
-2. `mtx payload install` from inside the new org root to register the first
-   payload (admin is already pre-mounted).
+2. Ensure **`payload-admin`** exists as a **sibling** repo (same folder that contains
+   the new `org-*`). Admin is wired via `../payload-admin` in `config/server.json`.
+   Install additional payloads with `mtx payload install` from the new org root.
 3. `cp .env.example .env` — fill in Railway tokens.
 4. `mtx deploy` — applies Terraform and deploys to Railway.
 
