@@ -12,14 +12,5 @@
       "runAsMaster": false
     }
   },
-  "apps": [
-    {
-      "id": "payload-admin",
-      "pathPrefix": "/admin",
-      "staticDir": "dist",
-      "apiPrefix": "/api",
-      "runAsMaster": false,
-      "source": { "path": "../payload-admin" }
-    }
-  ]
+  "apps": []
 }

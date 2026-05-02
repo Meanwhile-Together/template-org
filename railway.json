@@ -5,8 +5,7 @@
     "buildCommand": "export PATH=\"/usr/local/bin:/usr/bin:$PATH\" && mtx project railway-build"
   },
   "deploy": {
-    "startCommand": "PROJECT_ROOT=/app DISABLE_BROWSER_AUTOMATION=1 node targets/server/dist/index.js",
-    "preDeployCommand": "node scripts/railway-migrate.mjs",
+    "startCommand": "sh -c \"PROJECT_ROOT=/app DISABLE_BROWSER_AUTOMATION=1 exec node targets/server/dist/index.js\"",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
